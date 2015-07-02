@@ -1,5 +1,8 @@
 package com.hardsoftstudio.real.textview.utils;
 
+import com.hardsoftstudio.real.textview.R;
+import com.hardsoftstudio.real.textview.views.RealTextView;
+
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
@@ -17,12 +20,12 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.widget.TextView;
-import com.hardsoftstudio.real.textview.R;
-import com.hardsoftstudio.real.textview.views.RealTextView;
+
 import java.util.ArrayList;
 
 /**
- * A helper class to enable automatically resizing {@link android.widget.TextView}`s <code>textSize</code> to fit
+ * A helper class to enable automatically resizing {@link android.widget.TextView}`s
+ * <code>textSize</code> to fit
  * within its bounds.
  *
  * @attr ref R.styleable.AutofitTextView_sizeToFit
@@ -38,7 +41,8 @@ public class AutofitHelper {
     private static final float DEFAULT_PRECISION = 0.5f;
 
     /**
-     * Creates a new instance of {@link AutofitHelper} that wraps a {@link android.widget.TextView} and enables
+     * Creates a new instance of {@link AutofitHelper} that wraps a {@link android.widget.TextView}
+     * and enables
      * automatically sizing the text to fit.
      */
     public static AutofitHelper create(TextView view) {
@@ -46,7 +50,8 @@ public class AutofitHelper {
     }
 
     /**
-     * Creates a new instance of {@link AutofitHelper} that wraps a {@link android.widget.TextView} and enables
+     * Creates a new instance of {@link AutofitHelper} that wraps a {@link android.widget.TextView}
+     * and enables
      * automatically sizing the text to fit.
      */
     public static AutofitHelper create(TextView view, AttributeSet attrs) {
@@ -54,7 +59,8 @@ public class AutofitHelper {
     }
 
     /**
-     * Creates a new instance of {@link AutofitHelper} that wraps a {@link android.widget.TextView} and enables
+     * Creates a new instance of {@link AutofitHelper} that wraps a {@link android.widget.TextView}
+     * and enables
      * automatically sizing the text to fit.
      */
     public static AutofitHelper create(TextView view, AttributeSet attrs, int defStyle) {
@@ -76,8 +82,8 @@ public class AutofitHelper {
             precision = ta.getFloat(R.styleable.RealTextView_precision, precision);
             ta.recycle();
 
-            helper.setMinTextSize(minTextSize)
-                .setPrecision(precision);
+            helper.setMinTextSize(TypedValue.COMPLEX_UNIT_PX, minTextSize)
+                    .setPrecision(precision);
         }
         helper.setEnabled(enabled);
 
@@ -87,7 +93,8 @@ public class AutofitHelper {
     /**
      * Re-sizes the textSize of the TextView so that the text fits within the bounds of the View.
      */
-    private static void autofit(TextView view, TextPaint paint, float minTextSize, float maxTextSize,
+    private static void autofit(TextView view, TextPaint paint, float minTextSize,
+            float maxTextSize,
             int maxLines, float precision) {
         if (maxLines <= 0 || maxLines == Integer.MAX_VALUE) {
             // Don't auto-size since there's no limit on lines.
@@ -148,24 +155,27 @@ public class AutofitHelper {
                 displayMetrics));
 
         if (maxLines != 1) {
-            layout = new StaticLayout(text, paint, (int)targetWidth, Layout.Alignment.ALIGN_NORMAL,
+            layout = new StaticLayout(text, paint, (int) targetWidth, Layout.Alignment.ALIGN_NORMAL,
                     1.0f, 0.0f, true);
             lineCount = layout.getLineCount();
         }
 
-        if (RealTextView.DEBUG)
+        if (RealTextView.DEBUG) {
             Log.d(TAG, "low=" + low + " high=" + high + " mid=" + mid +
-                " target=" + targetWidth + " maxLines=" + maxLines + " lineCount=" + lineCount);
+                    " target=" + targetWidth + " maxLines=" + maxLines + " lineCount=" + lineCount);
+        }
 
         if (lineCount > maxLines) {
+            // For the case that `text` has more newline characters than `maxLines`.
+            if ((high - low) < precision) {
+                return low;
+            }
             return getAutofitTextSize(text, paint, targetWidth, maxLines, low, mid, precision,
                     displayMetrics);
-        }
-        else if (lineCount < maxLines) {
+        } else if (lineCount < maxLines) {
             return getAutofitTextSize(text, paint, targetWidth, maxLines, mid, high, precision,
                     displayMetrics);
-        }
-        else {
+        } else {
             float maxLineWidth = 0;
             if (maxLines == 1) {
                 maxLineWidth = paint.measureText(text, 0, text.length());
@@ -195,7 +205,7 @@ public class AutofitHelper {
             DisplayMetrics displayMetrics) {
         paint.setTextSize(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, size,
                 displayMetrics));
-        StaticLayout layout = new StaticLayout(text, paint, (int)width,
+        StaticLayout layout = new StaticLayout(text, paint, (int) width,
                 Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, true);
         return layout.getLineCount();
     }
@@ -206,8 +216,7 @@ public class AutofitHelper {
         TransformationMethod method = view.getTransformationMethod();
         if (method != null && method instanceof SingleLineTransformationMethod) {
             maxLines = 1;
-        }
-        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             // setMaxLines() and getMaxLines() are only available on android-16+
             maxLines = view.getMaxLines();
         }
@@ -252,7 +261,8 @@ public class AutofitHelper {
     }
 
     /**
-     * Adds a {@link AutofitHelper.OnTextSizeChangeListener} to the list of those whose methods are called
+     * Adds a {@link AutofitHelper.OnTextSizeChangeListener} to the list of those whose methods are
+     * called
      * whenever this {@link android.widget.TextView}'s textSize changes.
      */
     public AutofitHelper addOnTextSizeChangeListener(OnTextSizeChangeListener listener) {
@@ -264,7 +274,8 @@ public class AutofitHelper {
     }
 
     /**
-     * Removes the specified {@link AutofitHelper.OnTextSizeChangeListener} from the list of those whose methods
+     * Removes the specified {@link AutofitHelper.OnTextSizeChangeListener} from the list of those
+     * whose methods
      * are called whenever this {@link android.widget.TextView}'s textSize changes.
      */
     public AutofitHelper removeOnTextSizeChangeListener(OnTextSizeChangeListener listener) {
@@ -309,7 +320,6 @@ public class AutofitHelper {
      * is adjusted based on the current density and user font size preference.
      *
      * @param size The scaled pixel size.
-     *
      * @attr ref me.grantland.R.styleable#AutofitTextView_minTextSize
      */
     public AutofitHelper setMinTextSize(float size) {
@@ -322,7 +332,6 @@ public class AutofitHelper {
      *
      * @param unit The desired dimension unit.
      * @param size The desired size in the given units.
-     *
      * @attr ref me.grantland.R.styleable#AutofitTextView_minTextSize
      */
     public AutofitHelper setMinTextSize(int unit, float size) {
@@ -357,7 +366,6 @@ public class AutofitHelper {
      * is adjusted based on the current density and user font size preference.
      *
      * @param size The scaled pixel size.
-     *
      * @attr ref android.R.styleable#TextView_textSize
      */
     public AutofitHelper setMaxTextSize(float size) {
@@ -370,7 +378,6 @@ public class AutofitHelper {
      *
      * @param unit The desired dimension unit.
      * @param size The desired size in the given units.
-     *
      * @attr ref android.R.styleable#TextView_textSize
      */
     public AutofitHelper setMaxTextSize(int unit, float size) {
@@ -432,18 +439,18 @@ public class AutofitHelper {
                 mTextView.addTextChangedListener(mTextWatcher);
 
                 if (Build.VERSION.SDK_INT >= 11) {
-                  if (mOnLayoutChangeListener == null){
-                    mOnLayoutChangeListener = new AutofitOnLayoutChangeListener(this);
-                  }
-                  mTextView.addOnLayoutChangeListener(mOnLayoutChangeListener);
+                    if (mOnLayoutChangeListener == null) {
+                        mOnLayoutChangeListener = new AutofitOnLayoutChangeListener(this);
+                    }
+                    mTextView.addOnLayoutChangeListener(mOnLayoutChangeListener);
                 }
 
                 autofit();
             } else {
                 mTextView.removeTextChangedListener(mTextWatcher);
-              if (Build.VERSION.SDK_INT >= 11 && mOnLayoutChangeListener != null) {
-                mTextView.removeOnLayoutChangeListener(mOnLayoutChangeListener);
-              }
+                if (Build.VERSION.SDK_INT >= 11 && mOnLayoutChangeListener != null) {
+                    mTextView.removeOnLayoutChangeListener(mOnLayoutChangeListener);
+                }
 
                 mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTextSize);
             }
@@ -452,8 +459,8 @@ public class AutofitHelper {
     }
 
     /**
-     * @see android.widget.TextView#getTextSize()
      * @return the original text size of the View.
+     * @see android.widget.TextView#getTextSize()
      */
     public float getTextSize() {
         return mTextSize;
@@ -520,6 +527,7 @@ public class AutofitHelper {
     }
 
     private class AutofitTextWatcher implements TextWatcher {
+
         @Override
         public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
             // do nothing
@@ -538,10 +546,12 @@ public class AutofitHelper {
 
 
     /**
-     * When an object of a type is attached to an AutofitHelper, its methods will be called when the
+     * When an object of a type is attached to an AutofitHelper, its methods will be called when
+     * the
      * textSize is changed.
      */
     public interface OnTextSizeChangeListener {
+
         /**
          * This method is called to notify you that the size of the text has changed  to
          * <code>textSize</code> from <code>oldTextSize</code>.
