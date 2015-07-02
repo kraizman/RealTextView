@@ -22,17 +22,17 @@ android {
             signingConfig signingConfigs.release
         }
 
-        applicationVariants.all { variant ->
-            def file = variant.outputFile
-            println "Build info: $variant.buildType"
-
-            if (variant.buildType.name == "release") {
-                println "Release mode"
-                variant.outputFile = new File("C:\\Users\\Marcel\\Dropbox\\Android apps", "RealTextViewSample" + defaultConfig.versionName + ".apk")
-            } else {
-                variant.outputFile = new File(file.parent, file.name)
-            }
-        }
+//        applicationVariants.all { variant ->
+//            def file = variant.outputFile
+//            println "Build info: $variant.buildType"
+//
+//            if (variant.buildType.name == "release") {
+//                println "Release mode"
+//                variant.outputFile = new File("C:\\Users\\Marcel\\Dropbox\\Android apps", "RealTextViewSample" + defaultConfig.versionName + ".apk")
+//            } else {
+//                variant.outputFile = new File(file.parent, file.name)
+//            }
+//        }
 
     }
 }
