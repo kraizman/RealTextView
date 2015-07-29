@@ -22,9 +22,7 @@ This is what RealTextView does. As well for Button, CheckBox and EditText.
 ## Usage
 
 ```
-dependencies {
-    compile 'com.hardsoftstudio.real.textview:library:0.9.0'
-}
+
 ```
 
 SDK version >= 14
